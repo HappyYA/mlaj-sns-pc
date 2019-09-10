@@ -30,7 +30,11 @@ import {
   CheckboxGroup,
   Tag,
   Dialog,
+  Progress,
+  MessageBox,
+  Message,
 } from 'element-ui'
+Vue.use(Progress)
 Vue.use(Dialog)
 Vue.use(Tag)
 Vue.use(Checkbox)
@@ -54,10 +58,13 @@ Vue.use(Footer)
 Vue.use(Radio)
 Vue.use(RadioGroup)
 Vue.use(RadioButton)
-
+Vue.prototype.$message = Message;
+Vue.prototype.$msgbox = MessageBox;
 // Vue.use(Element, {
 //   size: Cookies.get('size') || 'medium' // set element-ui default size
 // })
+import axios from 'axios';
+Vue.prototype.$axios = axios;
 
 Vue.config.productionTip = false
 

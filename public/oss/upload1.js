@@ -81,8 +81,11 @@ function get_uploaded_object_name(filename)
     }
 }
 
-function set_upload_param(up, filename, ret)
-{
+function set_upload_param(up, filename, ret){
+    if (ret == false)
+    {
+        ret = get_signature()
+    }
     g_object_name = g_dirname;
     if (filename != '') {
         suffix = get_suffix(filename)
@@ -104,11 +107,11 @@ function set_upload_param(up, filename, ret)
     up.start();
 }
 console.log(document.getElementById('con'))
-window.uploaders = new plupload.Uploader({
+window.uploaderImg = new plupload.Uploader({
 	runtimes : 'html5,flash,silverlight,html4',
-	browse_button : 'addOss', 
+	browse_button : 'add-fa', 
     //multi_selection: false,
-	container: document.getElementById('con'),
+	container: document.getElementById('add-fm'),
 	flash_swf_url : './plupload-2.1.2/js/Moxie.swf',
 	silverlight_xap_url : './plupload-2.1.2/js/Moxie.xap',
     url : 'http://oss.aliyuncs.com',
@@ -116,13 +119,14 @@ window.uploaders = new plupload.Uploader({
 	init: {
 		PostInit: function() {
             console.log(123)
+			// document.getElementById('ossfile').innerHTML = '';
+			// document.getElementById('postfiles').onclick = function() {
             // set_upload_param(uploader, '', false);
             // return false;
 			// };
 		},
 
 		FilesAdded: function(up, files) {
-            console.log(this.editor)
 			// plupload.each(files, function(file) {
 			// 	document.getElementById('ossfile').innerHTML += '<div id="' + file.id + '">' + file.name + ' (' + plupload.formatSize(file.size) + ')<b></b>'
 			// 	+'<div class="progress"><div class="progress-bar" style="width: 0%"></div></div>'
@@ -130,7 +134,7 @@ window.uploaders = new plupload.Uploader({
             // });
             console.log(files[0].name,ossdata.ext.oss_cdn+'/'+g_object_name,g_object_name)
             // $('#console').html(`<img src="${ossdata.ext.oss_cdn+'/'+g_object_name}"/>`)
-            set_upload_param(uploaders, '', false);
+            set_upload_param(uploaderImg, '', false);
             return false;
              console.log(up,files,g_object_name)
 		},
@@ -150,11 +154,12 @@ window.uploaders = new plupload.Uploader({
 		},
 
 		FileUploaded: function(up, file, info) {
+            console.log('上传完成')
             if (info.status == 200)
             {
-                this.editor.replaceSelection('![image]('+ ossdata.ext.oss_cdn+'/'+g_object_name+')');
-                this.vm.dialogVisible = false;
+                // this.editor.replaceSelection('![image]('+ ossdata.ext.oss_cdn+'/'+g_object_name+')');
                 console.log(ossdata.ext.oss_cdn+'/'+g_object_name)
+                this.vm.imgSrc = ossdata.ext.oss_cdn+'/'+g_object_name
                 // document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = 'upload to oss success, object name:' + get_uploaded_object_name(file.name);
             }
             else

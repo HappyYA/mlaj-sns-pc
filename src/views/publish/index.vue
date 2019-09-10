@@ -3,10 +3,10 @@
         <div class="tabs">
             <ul class="tab-list">
                 <li class="active">文章</li>
-                <li>图集</li>
+                <!-- <li>图集</li>
                 <li>微头条</li>
                 <li>小视频</li>
-                <li>问答</li>
+                <li>问答</li> -->
             </ul>
         </div>
         <div class="editor-con">
@@ -36,7 +36,7 @@
                         <el-radio :label="6">自动</el-radio>
                     </el-radio-group>
                     <div class="add">
-                        <div class="add-img">添加图片</div>
+                        <div id="add-fm" class="add-img"><span v-if="!imgSrc" id="add-fa">添加封面</span><img class="fengmian" v-if="imgSrc" :src="imgSrc" alt=""></div>
                         <div class="add-img-tip">
                             优质的封面有利于推荐，请使用清晰度较高的图片，避免使用GIF、带大量文字的图片。
                         </div>
@@ -77,6 +77,7 @@
                     标签
                 </el-col>
                 <el-col :span="12">
+                    <div>已选标签</div>
                     <div>
                         <el-tag
                             class="tag"
@@ -104,34 +105,59 @@
         <div class="submit">
             <el-row class="submit-list">
                 <el-button round>存草稿</el-button>
-                <el-button type="primary" round>发布</el-button> 
+                <el-button round>预览</el-button> 
+                <el-button @click = "submitArticle" type="primary" round>发布</el-button> 
             </el-row>
         </div>
     </div>
 </template>
 <script>
-import editor from '@/components/editor'
+import editor from '@/components/editor';
+if (typeof window !== 'undefined') {
+  var $s = require('scriptjs');
+}
 export default {
     name:'publish',
     data() {
         return {
             articleTitle:'',
+            imgSrc:'',
             radio:1,
             author:'',
             origint:'',
             origin:1,
             peopleList:[],
             tags:[{name:'育儿知识'},{name:'父母提醒'}],
-            recommends:[{name:'育儿知识'},{name:'父母提醒'}]
+            recommends:[{name:'育儿知识'},{name:'父母提醒'},{name:'性格培养'},{name:'幼师成长'},{name:'区角素材'}],
+            html:''
         }
     },
     components:{
         editor
     },
     mounted(){
-        
+        let vm = this;
+        (async ()=>{
+            await vm.fetchScript('/oss/crypto1/crypto/crypto.js')
+            await vm.fetchScript('/oss/crypto1/hmac/hmac.js')
+            await vm.fetchScript('/oss/crypto1/sha1/sha1.js')
+            await vm.fetchScript('/oss/base64.js')
+            // await vm.fetchScript('/oss/plupload-2.1.2/js/plupload.full.min.js')
+            await vm.fetchScript('/oss/upload1.js')
+            vm.$nextTick(()=>{
+                uploaderImg.init();
+                uploaderImg.vm = vm;
+            })
+        })()
     },
     methods:{
+        fetchScript(url) {
+            return new Promise((resolve) => {
+                $s(url, () => {
+                    resolve()
+                })
+            })
+        },
         addTag(index){
             this.tags.push(this.recommends[index])
         },
@@ -139,7 +165,27 @@ export default {
             this.tags.splice(index,1)
         },
         markdownChange(markdown,html){
+            this.html = html;
             console.log(markdown,html)
+        },
+        submitArticle(){
+            this.$axios
+            .post('submitArticle',{
+            cover_img: coverphotostr,
+            status: 1,
+            title: $('.tictitle').val(),
+            zone_id: 1,
+            origin: origins,
+            tag_ids: tagid.slice(0, -1),
+            content: contentarrs,
+            type_id: overnum,
+            crowd:allpeople},)
+            .then(res=>{
+                console.log(res)
+            })
+            .catch(err=>{
+                console.log(err)
+            })
         }
     }
 }
@@ -223,5 +269,9 @@ export default {
     }
     .submit-list{
         text-align: right;
+    }
+    .fengmian{
+        width: 100%;
+        height: 100%;
     }
 </style>
