@@ -53,6 +53,10 @@ export default {
         'type': String,
         'default': 'markdown-editor'
       },
+      initData:{
+        'type': String,
+        'default': ''
+      },
       onchange: { // 内容改变时回调，返回（html, markdown, text）
         type: Function
       },
@@ -77,7 +81,8 @@ export default {
             videoSrc:'',
             audioSrc:'',
             videoIsFinish:true,
-            isFirst:true
+            isFirst:true,
+            isLoaded:false
         }
     },
     mounted(){
@@ -98,6 +103,14 @@ export default {
         getMarkdown: function () {
             return this.editor.getMarkdown()
         },
+        // 插入数据
+        appenMarkdown:function(markdown){
+            console.log(this.isLoaded)
+            // if(){
+
+            // }
+            return this.editor.replaceSelection(markdown)
+        },
         setMarkdown: function (markdown) {
             return this.editor.setMarkdown(markdown)
         },
@@ -112,6 +125,7 @@ export default {
                         height:'700px',
                         path:'/editor/lib/',
                         htmlDecode:true,
+                        watch:false,
                         saveHTMLToTextarea:true,
                         toolbarIcons:function(){
                             return ["undo", "redo", "|", "bold", "hr", "|", "preview", "watch", "|", "fullscreen", "info", "video",'images' ]
@@ -130,6 +144,7 @@ export default {
                                 images:"插入图片"
                             }
                         },
+                        markdown:vm.initData,
                         toolbarHandlers:{
                             /**
                             * @param {Object}      cm         CodeMirror对象
@@ -166,6 +181,7 @@ export default {
                             }
                         }
                     })
+                    vm.isLoaded = true;
                     // vm.editor.on('load', () => {
                     //     setTimeout(() => { // hack bug: 一个页面多个编辑器只能初始化其中一个数据问题
                     //         vm.initData && vm.editor.setMarkdown(vm.initData)

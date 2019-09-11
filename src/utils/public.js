@@ -8,19 +8,25 @@ export const getTagId = (name) => {
     })
 }
 // 发布文章
-export const pushArticle = (info)=>{
-    return axios.post(publicUrl+'/article',{
-        cover_img: info.cover_img,
-        status: info.status,
-        title: info.title,
-        zone_id: 1,
-        origin: info.origin,
-        tag_ids: info.tag_ids,
-        content: info.content,
-        draft :info.draft,
-        type_id: 1,
-        crowd:info.crowd,
-        columnIds:info.columnId
+export const pushArticle = (info,id)=>{
+    let url = id?`${publicUrl}/article?id=${id}`:`${publicUrl}/article`;
+    let type = id?'put':'post';
+    return axios.request({
+        url:url,
+        method:type,
+        data:{
+            cover_img: info.cover_img,
+            status: info.status,
+            title: info.title,
+            zone_id: 1,
+            origin: info.origin,
+            tag_ids: info.tag_ids,
+            content: info.content,
+            draft :info.draft,
+            type_id: 1,
+            crowd:info.crowd,
+            columnIds:info.columnId
+        }
     })
 }
 // 获取草稿
@@ -36,7 +42,10 @@ export const getArticleList = (page=1,status=2)=>{
         type_id:0
     })
 }
-
+// 删除文章
+export const delArticle = (id)=>{
+    return axios.delete(`${publicUrl}/article?id=${id}`)
+}
 export const getProgramaList = ()=>{
     return axios.get(publicUrl+'/column/page?pageSize=100')
 }
@@ -51,4 +60,10 @@ export const getProgramaInfo = (id) =>{
 }
 export const updateProgramaInfo = (info) =>{
     return axios.get(`${publicUrl}/column/update?id=${info.id}&describe=${info.describe}&name=${info.name}`)
+}
+export const login = (info)=>{
+    return axios.post(`${publicUrl}/backenduser/login`,{
+        password:info.password,
+        user_name:info.name
+    })
 }

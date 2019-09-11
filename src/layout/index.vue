@@ -41,7 +41,7 @@ export default {
         margin-bottom: 20px;
     }
     .main-con{
-        min-width: 1180px;
+        width: 1180px;
         margin: 0 auto;
     }
 </style>

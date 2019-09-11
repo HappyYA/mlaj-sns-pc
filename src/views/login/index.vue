@@ -17,6 +17,7 @@
     </div>
 </template>
 <script>
+import {login} from '@/utils/public.js';
 export default {
     name:'Login',
     data(){
@@ -29,9 +30,15 @@ export default {
     },
     methods:{
         login(){
-            if(this.form.name =='admin'&& this.form.pwd=='123456'){
+            login({
+                password:this.form.pwd,
+                name:this.form.name
+            })
+            .then(res=>{
+                sessionStorage.setItem('flag',true);
                 this.$router.push({ path: '/' });
-            }
+            })
+            
         }
     }
 }

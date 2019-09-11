@@ -5,7 +5,7 @@ Vue.use(Router)
 
 import Layout from '@/layout'
 
-export default new Router({
+export let router = new Router({
   routes: [
     {
       path: '/',
@@ -40,4 +40,21 @@ export default new Router({
       component: ()=>import('@/views/login/index')
     }
   ]
+});
+
+router.beforeEach((to, from, next) => {
+  let isLogin = sessionStorage.getItem('flag');
+  if(to.name!=='login'){
+    if(isLogin){
+      next();
+    }else{
+      next('/login')
+    }
+  }else{
+    if(isLogin){
+      next('/publish');
+    }else{
+      next()
+    }
+  }
 })

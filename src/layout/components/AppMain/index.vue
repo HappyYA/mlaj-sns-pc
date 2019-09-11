@@ -1,6 +1,6 @@
 <template>
     <div>
-    <keep-alive exclude="programaManage">
+    <keep-alive exclude="programaManage,articles">
         <router-view></router-view>
     </keep-alive>
     </div>

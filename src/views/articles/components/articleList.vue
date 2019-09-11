@@ -3,7 +3,7 @@
         <div class="list-item" v-for="(item,index) in list" :key="item.id">
             <div class="item-left article">
                 <div class="article-img-con">
-                    <img class="article-img" :src="item.cover_img" alt="">
+                    <img class="article-img" :src="item.cover_img?item.cover_img:articleImg" alt="">
                 </div>
                 <div class="article-con">
                     <p class="artile-title">{{item.title}}</p>
@@ -19,13 +19,14 @@
                 </div>
             </div>
             <div class="item-right">
-                <img class="edit" v-if="item.status===0" :src="editImg" alt="">
-                <img class="del-img"  :src="delImg" alt="">
+                <img @click="editItem(item.id)" class="edit" v-if="item.status===0" :src="editImg" alt="">
+                <img @click="delItem(item.id)" class="del-img"  :src="delImg" alt="">
             </div>
         </div>
         <el-pagination
             background
             layout="prev, pager, next"
+            :current-page="currentPage"
             :total="totalSize"
             @current-change="getNowList"
         >
@@ -33,7 +34,7 @@
     </div>
 </template>
 <script>
-import {getArticleList} from '@/utils/public.js'
+import {getArticleList,delArticle} from '@/utils/public.js'
 export default {
     name:'articleList',
     props:{
@@ -47,7 +48,8 @@ export default {
             list:[],
             totalSize:0,
             totalPage:0,
-            nowPage:0
+            nowPage:0,
+            currentPage:0,//当前页
         }
     },
     mounted() {
@@ -69,8 +71,34 @@ export default {
             this.getList(val)
             
         },
-        delItem(){
+        delItem(id){
+            this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                return delArticle(id)
+            }).then(res=>{
+                if(res.data.code==1000){
+                    this.currentPage = 1;
+                    this.getList(1);
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    });
+                }
+            })
+            .catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });          
+            });
             
+            console.log(id)
+        },
+        editItem(id){
+            this.$router.push({path:'/publish',query:{id:id}});
         }
     },
 }

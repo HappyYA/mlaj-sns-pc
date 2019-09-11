@@ -3,7 +3,7 @@ import Vue from 'vue'
 import 'normalize.css/normalize.css' // a modern alternative to CSS resets
 
 import App from './App.vue'
-import router from './router'
+import {router} from './router'
 import store from './store'
 import './plugins/element.js'
 import {
@@ -82,6 +82,7 @@ Vue.use(RadioGroup)
 Vue.use(RadioButton)
 Vue.prototype.$message = Message;
 Vue.prototype.$msgbox = MessageBox;
+Vue.prototype.$confirm = MessageBox.confirm;
 // Vue.use(Element, {
 //   size: Cookies.get('size') || 'medium' // set element-ui default size
 // })
