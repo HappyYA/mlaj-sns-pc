@@ -5,7 +5,7 @@
             <div class="user-info">
                 <img class="user-icon" :src="userIcon" alt="">
                 <span class="user-name">美乐爱</span>
-                <img class="quit" src="../../../assets/quit.png" >
+                <img @click="quit" class="quit" src="../../../assets/quit.png" >
             </div>
         </div>
     </div>
@@ -16,6 +16,12 @@ export default {
     data() {
         return {
             userIcon:require('../../../assets/header.png')
+        }
+    },
+    methods: {
+        quit(){
+            sessionStorage.removeItem('flag');
+            this.$router.push({ path: '/login' });
         }
     },
 }
@@ -55,5 +61,6 @@ export default {
     .quit{
         width: 24px;
         height: 24px;
+        cursor: pointer;
     }
 </style>
