@@ -2,7 +2,7 @@
     <div>
         <el-menu
             :default-openeds="['1']"
-            :default-active="routerPath"
+            :default-active="this.$route.path"
             class="nav-slider"
             @open="handleOpen"
             @close="handleClose"
@@ -17,6 +17,14 @@
                 </template>
                 <el-menu-item index="/publish">发文章</el-menu-item>
                 <el-menu-item index="/articles">文章管理</el-menu-item>
+            </el-submenu>
+            <el-submenu index="1">
+                <template slot="title">
+                    <i class=""><img class="logos" src="../../../assets/logos.png" alt="" srcset=""></i>
+                    <span class="nav-header">栏目管理</span>
+                </template>
+                <el-menu-item index="/programa">添加栏目</el-menu-item>
+                <el-menu-item index="/programaManage">栏目管理</el-menu-item>
             </el-submenu>
         </el-menu>
     </div>

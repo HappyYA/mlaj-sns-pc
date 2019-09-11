@@ -32,11 +32,14 @@
                 <el-col :span="12">
                     <el-radio-group v-model="radio">
                         <el-radio :label="1">单图</el-radio>
-                        <el-radio :label="3">三图</el-radio>
-                        <el-radio :label="6">自动</el-radio>
+                        <!-- <el-radio :label="3">三图</el-radio>
+                        <el-radio :label="6">自动</el-radio> -->
                     </el-radio-group>
-                    <div class="add">
-                        <div id="add-fm" class="add-img"><span v-if="!imgSrc" id="add-fa">添加封面</span><img class="fengmian" v-if="imgSrc" :src="imgSrc" alt=""></div>
+                    <div class="add" id="add-fm">
+                        <div  class="add-img" id="add-fa">
+                            <span v-if="!imgSrc" >添加封面</span>
+                            <img class="fengmian" v-if="imgSrc" :src="imgSrc" alt="">
+                        </div>
                         <div class="add-img-tip">
                             优质的封面有利于推荐，请使用清晰度较高的图片，避免使用GIF、带大量文字的图片。
                         </div>
@@ -66,9 +69,9 @@
                 </el-col>
                 <el-col :span="12">
                     <el-checkbox-group v-model="peopleList">
-                        <el-checkbox label="家长"></el-checkbox>
-                        <el-checkbox label="老师"></el-checkbox>
-                        <el-checkbox label="园长"></el-checkbox>
+                        <el-checkbox label="0">家长</el-checkbox>
+                        <el-checkbox label="1">教师</el-checkbox>
+                        <el-checkbox label="2">园长</el-checkbox>
                     </el-checkbox-group>
                 </el-col>
             </el-row>
@@ -77,8 +80,8 @@
                     标签
                 </el-col>
                 <el-col :span="12">
-                    <div>已选标签</div>
-                    <div>
+                    <div class="already-tag">已选标签:</div>
+                    <div class="already-tag-list">
                         <el-tag
                             class="tag"
                             v-for="(tag,index) in tags"
@@ -88,6 +91,13 @@
                             :type="tag.type">
                             {{tag.name}}
                         </el-tag>
+                    </div>
+                    <div>
+                        <el-input class="add-tag-item" 
+                        v-model="addTagItemInput"
+                        @keyup.enter.native="addTag" 
+                        maxlength='50' 
+                        placeholder="输入标签"></el-input>
                     </div>
                     <div class="recommend-tags">
                         <div class="recommend-title">推荐标签:</div>
@@ -101,11 +111,26 @@
                     </div>
                 </el-col>
             </el-row>
+            <el-row class="info-item">
+                <el-col :span="3" class="info-title">
+                    栏目
+                </el-col>
+                <el-col :span="12">
+                    <el-select v-model="programa" multiple placeholder="请选择栏目">
+                        <el-option
+                            v-for="item in programaList"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-col>
+            </el-row>
         </div>
         <div class="submit">
             <el-row class="submit-list">
-                <el-button round>存草稿</el-button>
-                <el-button round>预览</el-button> 
+                <el-button round @click = "savedraft">存草稿</el-button>
+                <!-- <el-button round>预览</el-button>  -->
                 <el-button @click = "submitArticle" type="primary" round>发布</el-button> 
             </el-row>
         </div>
@@ -113,6 +138,7 @@
 </template>
 <script>
 import editor from '@/components/editor';
+import {getTagId,pushArticle,getProgramaList,getDraft} from '@/utils/public.js'
 if (typeof window !== 'undefined') {
   var $s = require('scriptjs');
 }
@@ -121,15 +147,25 @@ export default {
     data() {
         return {
             articleTitle:'',
-            imgSrc:'',
+            imgSrc:'', // 封面图片地址
+            cover_img:'',//传给后台的封面地址
             radio:1,
             author:'',
             origint:'',
             origin:1,
-            peopleList:[],
-            tags:[{name:'育儿知识'},{name:'父母提醒'}],
+            peopleList:[], // 发布人群
+            tags:[],
+            markdown:'',
+            tagIdTemp:[],
             recommends:[{name:'育儿知识'},{name:'父母提醒'},{name:'性格培养'},{name:'幼师成长'},{name:'区角素材'}],
-            html:''
+            html:'', //传给后台的html
+            isFirstLoad:true,//是否是第一次加载
+            addTagItemInput:'', //添加咋的标签
+            tagsId :'',// 穿给后台的标签ID
+            originInfo:{},//传给后台的来源信息
+            programa:[],//栏目
+            programaList:[],//栏目列表
+            articleId :'',//文章Id
         }
     },
     components:{
@@ -137,18 +173,28 @@ export default {
     },
     mounted(){
         let vm = this;
+        // uploaderImg.init();
+        // uploaderImg.vm = vm;
+        // console.log(1)
         (async ()=>{
-            await vm.fetchScript('/oss/crypto1/crypto/crypto.js')
-            await vm.fetchScript('/oss/crypto1/hmac/hmac.js')
-            await vm.fetchScript('/oss/crypto1/sha1/sha1.js')
-            await vm.fetchScript('/oss/base64.js')
-            // await vm.fetchScript('/oss/plupload-2.1.2/js/plupload.full.min.js')
-            await vm.fetchScript('/oss/upload1.js')
-            vm.$nextTick(()=>{
-                uploaderImg.init();
-                uploaderImg.vm = vm;
-            })
+            if(vm.isFirstLoad){
+                await vm.fetchScript('/oss/crypto1/crypto/crypto.js')
+                await vm.fetchScript('/oss/crypto1/hmac/hmac.js')
+                await vm.fetchScript('/oss/crypto1/sha1/sha1.js')
+                await vm.fetchScript('/oss/base64.js')
+                // await vm.fetchScript('/oss/plupload-2.1.2/js/plupload.full.min.js')
+                await vm.fetchScript('/oss/upload1.js')
+                vm.$nextTick(()=>{
+                    if(vm.isFirstLoad){
+                        uploaderImg.init();
+                        uploaderImg.vm = vm;
+                        vm.isFirstLoad= false
+                    }
+                })
+            }
         })()
+        this.articleId = this.$route.query.id||'';
+        // this.getProgramaList();
     },
     methods:{
         fetchScript(url) {
@@ -158,36 +204,213 @@ export default {
                 })
             })
         },
+        getProgramaList(){
+            getProgramaList().then(res=>{
+                if(res.data.code==1000){
+                    this.programaList = res.data.data.list
+                }
+                console.log(res.data)
+            })
+        },
+        // 用户手动输入标签
+        addTagItem(){
+            let tagTemp = {};
+            let vm = this;
+            getTagId(this.addTagItemInput).then(res=>{
+                tagTemp.name = this.recommends[index].name;
+                tagTemp.id = res.data.data.tag_id;
+                if(vm.tagIdTemp.indexOf(tagTemp.id)>-1){
+                    vm.$message({
+                        duration:1000,
+                        message:'请不要重复添加标签'
+                    });
+                }else{
+                    vm.tags.push(tagTemp),
+                    vm.tagIdTemp.push(tagTemp.id);
+                }
+            })
+        },
+        // 用户点击推荐标签 添加标签
         addTag(index){
-            this.tags.push(this.recommends[index])
+                let tagTemp = {};
+                let vm = this;
+                let isNotEnter = (typeof index ==='number')
+                let name = isNotEnter ? this.recommends[index].name : this.addTagItemInput
+                if(!isNotEnter && !this.addTagItemInput){
+                    vm.$message({
+                        duration:1000,
+                        message:'请输入要添加的标签'
+                    });
+                }
+                getTagId(name).then(res=>{
+                    tagTemp.name = name;
+                    tagTemp.id = res.data.data.tag_id;
+                    console.log(res)
+                    if(vm.tagIdTemp.indexOf(tagTemp.id)>-1){
+                        vm.$message({
+                            duration:1000,
+                            message:'请不要重复添加标签'
+                        });
+                    }else{
+                        vm.tags.push(tagTemp),
+                        vm.tagIdTemp.push(tagTemp.id);
+                        if(!isNotEnter && vm.addTagItemInput){
+                           vm.addTagItemInput=''
+                        }
+                    }
+                })
         },
         closeTag(index){
+            this.tagIdTemp.splice(index,1)
             this.tags.splice(index,1)
         },
-        markdownChange(markdown,html){
-            this.html = html;
-            console.log(markdown,html)
+        markdownChange(info){
+            this.html = info.html;
+            this.markdown = info.markdown
+            // console.log(markdown,html)
         },
         submitArticle(){
-            this.$axios
-            .post('submitArticle',{
-            cover_img: coverphotostr,
-            status: 1,
-            title: $('.tictitle').val(),
-            zone_id: 1,
-            origin: origins,
-            tag_ids: tagid.slice(0, -1),
-            content: contentarrs,
-            type_id: overnum,
-            crowd:allpeople},)
+            if(!this.articleTitle){
+                this.$message({
+                    duration:1000,
+                    type: 'warning',
+                    message:'请添加标题'
+                });
+                return false;
+            }
+            if(!this.html){
+                this.$message({
+                    duration:1000,
+                    type: 'warning',
+                    message:'文章内容为空'
+                });
+                return false;
+            }
+            if(!this.cover_img){
+                this.$message({
+                    duration:1000,
+                    type: 'warning',
+                    message:'请添加封面'
+                });
+                return false;
+            }
+            if(!this.peopleList.toString()){
+                this.$message({
+                    duration:1000,
+                    type: 'warning',
+                    message:'请选择发布端'
+                });
+                return false;
+            }
+            if(!this.tagIdTemp.toString()){
+                this.$message({
+                    duration:1000,
+                    type: 'warning',
+                    message:'请选择标签'
+                });
+                return false;
+            }
+            if(this.tagIdTemp.length>5){
+                this.$message({
+                    duration:1000,
+                    type: 'warning',
+                    message:'标签最多只能有五个'
+                });
+                return false;
+            }
+            if(!this.programa){
+                this.$message({
+                    duration:1000,
+                    type: 'warning',
+                    message:'请选择栏目'
+                });
+                return false;
+            }
+            if(this.origin==1){
+                this.originInfo = JSON.stringify({});
+            }else if(this.origin==2 && !this.origint && !this.origint){ 
+                this.$message({
+                    duration:1000,
+                    type: 'warning',
+                    message:'请补充转载来源信息'
+                });
+                return false;
+            }else if(this.origin==2 && this.origint && this.origint){
+                this.originInfo = JSON.stringify({
+                    author:this.author,
+                    origin:this.origint
+                });
+            }
+            let vm = this; 
+            pushArticle({
+                    cover_img: vm.cover_img,
+                    status: 1, //发布状态
+                    title: vm.articleTitle,
+                    zone_id: 1,
+                    origin: vm.originInfo,
+                    tag_ids: vm.tagIdTemp.toString(),
+                    content: vm.html,
+                    draft :vm.markdown,
+                    type_id: 1,
+                    crowd:vm.peopleList.toString(),
+                    columnId:vm.programa
+            })
+            .then(res=>{
+                this.$message({
+                    duration:1000,
+                    type: 'success',
+                    message:'发表成功'
+                });
+            })
+            .catch(err=>{
+                console.log(err)
+            })
+        },
+        savedraft(){
+            let vm = this; 
+            if(this.origin==1){
+                this.originInfo = JSON.stringify({});
+            }else if(this.origin==2){
+                this.originInfo = JSON.stringify({
+                    author:this.author,
+                    origin:this.origint
+                });
+            }
+            pushArticle({
+                    cover_img: vm.cover_img,
+                    status: 0,
+                    title: vm.articleTitle,
+                    zone_id: 1,
+                    origin: "{}",
+                    tag_ids: vm.tagIdTemp.toString(),
+                    content: vm.html,
+                    draft :vm.markdown,
+                    type_id: 1,
+                    crowd:vm.peopleList.toString()
+                    })
             .then(res=>{
                 console.log(res)
             })
             .catch(err=>{
                 console.log(err)
             })
+        } ,
+        // 获取草稿内容
+        getDraftInfo(){
+            getDraft(this.articleId)
+            .then(res=>{
+                console.log(res.data.data)
+            })
         }
-    }
+
+    },
+    activated(){
+        this.getProgramaList();
+        if(this.articleId||this.articleId===0){
+            this.getDraftInfo()
+        }
+    },
+    
 }
 </script>
 <style lang="scss" scoped>
@@ -251,6 +474,7 @@ export default {
     }
     .tag{
         margin-right: 6px;
+        margin-bottom: 6px;
     }
     .recommend-tags{
         display: flex;
@@ -258,11 +482,16 @@ export default {
     }
     .recommend-title{
         margin-right: 10px;
+        flex-shrink: 1;
+        width: 100px;
     }
     .tag-item{
         padding: 4px;
         background-color: #f0f1f3;
         margin-right: 10px;
+        margin-bottom: 8px;
+        display: inline-block;
+        cursor: pointer;
     }
     .submit{
         padding: 20px;
@@ -273,5 +502,19 @@ export default {
     .fengmian{
         width: 100%;
         height: 100%;
+    }
+    .already-tag{
+        margin-bottom: 10px;
+    }
+    .already-tag-list{
+        min-height: 100px;
+        width: 500px;
+        border: 1px solid #999;
+        padding: 5px;
+        border-radius: 4px;
+    }
+    .add-tag-item{
+        margin: 5px 0;
+        background: #f0f1f3;
     }
 </style>

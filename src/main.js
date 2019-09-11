@@ -33,7 +33,29 @@ import {
   Progress,
   MessageBox,
   Message,
+  Select,
+  Option,
+  OptionGroup,
+  Tabs,
+  TabPane,
+  Table,
+  TableColumn,
+  DatePicker,
+  TimeSelect,
+  TimePicker,
+  Pagination,
 } from 'element-ui'
+Vue.use(Pagination)
+Vue.use(Table)
+Vue.use(TableColumn)
+Vue.use(DatePicker)
+Vue.use(TimeSelect)
+Vue.use(TimePicker)
+Vue.use(Tabs)
+Vue.use(TabPane)
+Vue.use(Select)
+Vue.use(Option)
+Vue.use(OptionGroup)
 Vue.use(Progress)
 Vue.use(Dialog)
 Vue.use(Tag)

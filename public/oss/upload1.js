@@ -82,10 +82,6 @@ function get_uploaded_object_name(filename)
 }
 
 function set_upload_param(up, filename, ret){
-    if (ret == false)
-    {
-        ret = get_signature()
-    }
     g_object_name = g_dirname;
     if (filename != '') {
         suffix = get_suffix(filename)
@@ -106,7 +102,6 @@ function set_upload_param(up, filename, ret){
 
     up.start();
 }
-console.log(document.getElementById('con'))
 window.uploaderImg = new plupload.Uploader({
 	runtimes : 'html5,flash,silverlight,html4',
 	browse_button : 'add-fa', 
@@ -160,6 +155,7 @@ window.uploaderImg = new plupload.Uploader({
                 // this.editor.replaceSelection('![image]('+ ossdata.ext.oss_cdn+'/'+g_object_name+')');
                 console.log(ossdata.ext.oss_cdn+'/'+g_object_name)
                 this.vm.imgSrc = ossdata.ext.oss_cdn+'/'+g_object_name
+                this.vm.cover_img = '/'+g_object_name;
                 // document.getElementById(file.id).getElementsByTagName('b')[0].innerHTML = 'upload to oss success, object name:' + get_uploaded_object_name(file.name);
             }
             else

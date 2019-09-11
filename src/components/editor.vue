@@ -33,6 +33,7 @@
                         @change="addVideos">
                     <el-button type="primary" @click='startAddVideo'>点击开始上传</el-button>
                     <video v-if="videoSrc" controls width="100%" :src="videoSrc"></video>
+                    <audio v-if="audioSrc" controls width="100%" :src="audioSrc"></audio>
                     <el-progress :text-inside="true" :stroke-width="20" :percentage="percentage" status="exception"></el-progress>
                 </div>
             </el-dialog>
@@ -74,8 +75,9 @@ export default {
             dialogVisibleVideo:false,
             percentage:0,
             videoSrc:'',
+            audioSrc:'',
             videoIsFinish:true,
-            isFirst:false
+            isFirst:true
         }
     },
     mounted(){
@@ -154,11 +156,11 @@ export default {
                                         await vm.fetchScript('/oss/crypto1/sha1/sha1.js')
                                         await vm.fetchScript('/oss/base64.js')
                                         await vm.fetchScript('/oss/upload.js')  
-                                        if(!vm.isFirst){
+                                        if(vm.isFirst){
                                             uploaders.vm = vm
                                             uploaders.init()      
                                             uploaders.editor= cm;
-                                            vm.isFirst= true
+                                            vm.isFirst= false
                                         }
                                     })       
                             }

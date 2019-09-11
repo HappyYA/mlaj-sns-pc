@@ -21,7 +21,17 @@ export default new Router({
           path: '/articles',
           name: 'articles',
           component: ()=>import('@/views/articles/index')
-        }
+        },
+        {
+          path: '/programa',
+          name: 'programa',
+          component: ()=>import('@/views/addPrograma/index')
+        },
+        {
+          path: '/programaManage',
+          name: 'programaManage',
+          component: ()=>import('@/views/programaManage/index')
+        },
       ]
     },
     {
