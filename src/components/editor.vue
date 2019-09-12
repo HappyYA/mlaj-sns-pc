@@ -128,7 +128,7 @@ export default {
                         watch:false,
                         saveHTMLToTextarea:true,
                         toolbarIcons:function(){
-                            return ["undo", "redo", "|", "bold", "hr", "|", "preview", "watch", "|", "fullscreen", "info", "video",'images' ]
+                            return ["undo", "redo", "clear", "|" , "h1", "h2", "h3", "h4", "h5", "h6", "|", "bold", "hr", "|", "preview", "watch","search", "|", "fullscreen", "info", "video",'images' ]
                         },
                          toolbarIconsClass:{
                             video:'fa-video-camera',
@@ -144,6 +144,7 @@ export default {
                                 images:"插入图片"
                             }
                         },
+                        placeholder:'输入文章内容',
                         markdown:vm.initData,
                         toolbarHandlers:{
                             /**
@@ -337,7 +338,7 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-    .add-img{
-        
+    #mla-editor{
+        z-index: 9999;
     }
 </style>

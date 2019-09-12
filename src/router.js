@@ -57,4 +57,11 @@ router.beforeEach((to, from, next) => {
       next()
     }
   }
+  if(to.name =='publish'){
+    let loaded = sessionStorage.getItem('loaded');
+    if(!loaded){
+      sessionStorage.setItem('loaded',true)
+      location.reload()
+    }
+  }
 })

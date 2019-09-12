@@ -37,8 +37,8 @@
                         <!-- <el-radio :label="3">三图</el-radio>
                         <el-radio :label="6">自动</el-radio> -->
                     </el-radio-group>
-                    <div class="add" id="add-fm">
-                        <div  class="add-img" id="add-fa">
+                    <div class="add" id="addCon1">
+                        <div  class="add-img1" id="addImg1">
                             <span v-if="!imgSrc" >添加封面</span>
                             <img class="fengmian" v-if="imgSrc" :src="imgSrc" alt="">
                         </div>
@@ -269,12 +269,13 @@ export default {
             this.tags.splice(index,1)
         },
         markdownChange(info){
-            this.html = info.html;
-            this.markdown = info.markdown
-            // console.log(markdown,html)
+            // this.html = info.html;
+            // this.markdown = info.markdown
+            console.log(markdown,html)
         },
         submitArticle(){
             this.html = this.$refs.markdown.getHTML();
+            this.markdown = this.$refs.markdown.getMarkdown();
             if(!this.articleTitle){
                 this.$message({
                     duration:1000,
@@ -383,6 +384,8 @@ export default {
         },
         savedraft(){
             let vm = this; 
+            this.html = this.$refs.markdown.getHTML();
+            this.markdown = this.$refs.markdown.getMarkdown();
             if(this.origin==1){
                 this.originInfo = JSON.stringify({});
             }else if(this.origin==2){
@@ -403,7 +406,7 @@ export default {
                     type_id: 1,
                     crowd:vm.peopleList.toString(),
                     columnId:vm.programa
-                    })
+                    },vm.articleId)
             .then(res=>{
                if(res.data.code==1000){
                     this.$message({
@@ -411,6 +414,8 @@ export default {
                         type: 'success',
                         message:'存储成功'
                     });
+                    this.resetData()
+                    this.$router.push('/articles')
                 }else{
                     this.$message({
                         duration:1000,
@@ -536,7 +541,7 @@ export default {
         display: flex;
         margin-top: 20px;
     }
-    .add-img{
+    .add-img1{
         height: 105px;
         width: 150px;
         background-color: #f0f1f3;

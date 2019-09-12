@@ -21,6 +21,7 @@ export default {
     methods: {
         quit(){
             sessionStorage.removeItem('flag');
+            sessionStorage.removeItem('loaded')
             this.$router.push({ path: '/login' });
         }
     },

@@ -104,9 +104,9 @@ function set_upload_param(up, filename, ret){
 }
 window.uploaderImg = new plupload.Uploader({
 	runtimes : 'html5,flash,silverlight,html4',
-	browse_button : 'add-fa', 
+	browse_button : 'addImg1', 
     //multi_selection: false,
-	container: document.getElementById('add-fm'),
+	container: document.getElementById('addCon1'),
 	flash_swf_url : './plupload-2.1.2/js/Moxie.swf',
 	silverlight_xap_url : './plupload-2.1.2/js/Moxie.xap',
     url : 'http://oss.aliyuncs.com',
