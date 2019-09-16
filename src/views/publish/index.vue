@@ -132,7 +132,7 @@
         <div class="submit">
             <el-row class="submit-list">
                 <el-button round @click = "savedraft">存草稿</el-button>
-                <el-button round @click = "handlePreview">预览</el-button> 
+                <!-- <el-button round @click = "handlePreview">预览</el-button>  -->
                 <el-button @click = "submitArticle" type="primary" round>发布</el-button> 
             </el-row>
         </div>
@@ -331,7 +331,7 @@ export default {
                 });
                 return false;
             }
-            if(!this.programa){
+            if(this.programa.length===0){
                 this.$message({
                     duration:1000,
                     type: 'warning',

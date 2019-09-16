@@ -93,15 +93,30 @@ export default {
                 des:this.des
                 })
             .then(res=>{
+                if(res.data.code==1000){
+                    this.$message({
+                        duration:2000,
+                        type:'success',
+                        message:'添加成功'
+                    });
+                    this.sotr = '';
+                    this.name = '';
+                    this.type = '';
+                    this.des = '';
+                }else{
+                    this.$message({
+                        duration:1000,
+                        type: 'error',
+                        message:'添加失败'
+                    });
+                }
+            })
+            .catch(err=>{
                 this.$message({
-                    duration:2000,
-                    type:'success',
-                    message:'添加成功'
+                    duration:1000,
+                    type: 'error',
+                    message:'添加失败'
                 });
-                this.sotr = '';
-                this.name = '';
-                this.type = '';
-                this.des = '';
             })
         }
     },

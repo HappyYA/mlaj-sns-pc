@@ -8,13 +8,12 @@
                 <div class="article-con">
                     <p class="artile-title">{{item.title}}</p>
                     <p class="article-num">
-                        <span>浏览 20 </span>  
-                        <span>点赞 20</span>
+                        <span>浏览 {{item.read_number}} </span>  
+                        <span>点赞 {{item.like_number}}</span>
                     </p>
                     <p class="article-people">
                         <span>已发人群 </span>
-                        <span class="people">老师</span>
-                        <span class="people">园长</span>
+                        <span class="people" v-for="(item1) in item.crowd_list" :key="item1">{{crowdMap[item1]}}</span>
                     </p>
                 </div>
             </div>
@@ -23,14 +22,16 @@
                 <img @click="delItem(item.id)" class="del-img"  :src="delImg" alt="">
             </div>
         </div>
-        <el-pagination
-            background
-            layout="prev, pager, next"
-            :current-page="currentPage"
-            :total="totalSize"
-            @current-change="getNowList"
-        >
-        </el-pagination>
+        <div class="pagination">
+            <el-pagination
+                background
+                layout="prev, pager, next"
+                :current-page="currentPage"
+                :total="totalSize"
+                @current-change="getNowList"
+            >
+            </el-pagination>
+        </div>
     </div>
 </template>
 <script>
@@ -50,6 +51,11 @@ export default {
             totalPage:0,
             nowPage:0,
             currentPage:0,//当前页
+            crowdMap:{
+                1:'教师',
+                2:'园长',
+                0:'家长'
+            }
         }
     },
     mounted() {
@@ -85,6 +91,12 @@ export default {
                     this.$message({
                         type: 'success',
                         message: '删除成功!'
+                    });
+                }else{
+                    this.$message({
+                        duration:1000,
+                        type: 'error',
+                        message:'删除失败'
                     });
                 }
             })
@@ -162,6 +174,12 @@ export default {
     img{
         cursor: pointer;
     }
+}
+.pagination{
+    margin-top: 20px;
+    margin-bottom: 50px;
+    width: 100%;
+    text-align: right;
 }
 
 </style>
