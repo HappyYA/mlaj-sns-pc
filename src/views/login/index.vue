@@ -35,8 +35,23 @@ export default {
                 name:this.form.name
             })
             .then(res=>{
-                sessionStorage.setItem('flag',true);
-                this.$router.push({ path: '/' });
+                if(res.data.code=='1000'){
+                    sessionStorage.setItem('flag',true);
+                    this.$router.push({ path: '/' });
+                }else{
+                    this.$message({
+                        duration:1000,
+                        type: 'error',
+                        message:'登录失败'
+                    });
+                }
+            })
+            .catch(err=>{
+                this.$message({
+                    duration:1000,
+                    type: 'error',
+                    message:'登录失败'
+                });
             })
             
         }
