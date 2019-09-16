@@ -65,5 +65,16 @@ export const login = (info)=>{
     return axios.post(`${publicUrl}/backenduser/login`,{
         password:info.password,
         user_name:info.name
+    },{
+        headers:{
+            'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'
+        },
+        transformRequest:[function(data){
+            let ret = ''
+            for (let it in data) {
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+            }
+            return ret
+        }]
     })
 }

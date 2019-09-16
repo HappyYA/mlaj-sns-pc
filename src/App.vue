@@ -33,4 +33,7 @@ body{
     color:    #909;
   }
 }
+.dialog-phone .el-dialog{
+    background-color: transparent;
+}
 </style>

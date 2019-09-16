@@ -128,7 +128,7 @@ export default {
                         watch:false,
                         saveHTMLToTextarea:true,
                         toolbarIcons:function(){
-                            return ["undo", "redo", "clear", "|" , "h1", "h2", "h3", "h4", "h5", "h6", "|", "bold", "hr", "|", "preview", "watch","search", "|", "fullscreen", "info", "video",'images' ]
+                            return ["undo", "redo", "clear", "|" , "h1", "h2", "h3", "h4", "h5", "h6", "|", "bold", "hr", "|", "preview", "watch","search", "|", "info", "video",'images' ]
                         },
                          toolbarIconsClass:{
                             video:'fa-video-camera',
@@ -338,7 +338,4 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-    #mla-editor{
-        z-index: 9999;
-    }
 </style>

@@ -132,14 +132,19 @@
         <div class="submit">
             <el-row class="submit-list">
                 <el-button round @click = "savedraft">存草稿</el-button>
-                <!-- <el-button round>预览</el-button>  -->
+                <!-- <el-button round @click = "handlePreview">预览</el-button>  -->
                 <el-button @click = "submitArticle" type="primary" round>发布</el-button> 
             </el-row>
         </div>
+        <phone
+            :isShowPhone="isShowPhone"
+            :handleClose="closePhone"
+        ></phone>
     </div>
 </template>
 <script>
 import editor from '@/components/editor';
+import phone from '@/components/phone';
 import {getTagId,pushArticle,getProgramaList,getDraft} from '@/utils/public.js'
 if (typeof window !== 'undefined') {
   var $s = require('scriptjs');
@@ -170,10 +175,12 @@ export default {
             programaList:[],//栏目列表
             articleId :'',//文章Id
             editorInitData:'',//初始化markdown数据
+            isShowPhone:false, // 是否显示预览手机
         }
     },
     components:{
-        editor
+        editor,
+        phone
     },
     mounted(){
         let vm = this;
@@ -324,7 +331,7 @@ export default {
                 });
                 return false;
             }
-            if(!this.programa){
+            if(this.programa.length===0){
                 this.$message({
                     duration:1000,
                     type: 'warning',
@@ -487,6 +494,12 @@ export default {
                 this.$refs.markdown.setMarkdown('');
             }
 
+        },
+        closePhone(){
+            this.isShowPhone = false;
+        },
+        handlePreview(){
+            this.isShowPhone = true;
         }
 
     },
