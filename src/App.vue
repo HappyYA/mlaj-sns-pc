@@ -36,4 +36,12 @@ body{
 .dialog-phone .el-dialog{
     background-color: transparent;
 }
+.input-text-login .el-input__inner{
+    height: 100%;
+    border-radius: 0;
+}
+.input-text-login .el-input-group__prepend{
+    padding: 0;
+    font-size: 0;
+}
 </style>
