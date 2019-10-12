@@ -59,7 +59,7 @@ export const getProgramaInfo = (id) =>{
     return axios.get(`${publicUrl}/column/getInfo?id=${id}`)
 }
 export const updateProgramaInfo = (info) =>{
-    return axios.get(`${publicUrl}/column/update?id=${info.id}&describe=${info.describe}&name=${info.name}`)
+    return axios.get(`${publicUrl}/column/update?id=${info.id}&describe=${info.describe}&name=${info.name}&sort=${info.sort}`)
 }
 export const login = (info)=>{
     return axios.post(`${publicUrl}/backenduser/login`,{

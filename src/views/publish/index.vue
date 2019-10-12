@@ -136,15 +136,15 @@
                 <el-button @click = "submitArticle" type="primary" round>发布</el-button> 
             </el-row>
         </div>
-        <phone
+        <!-- <phone
             :isShowPhone="isShowPhone"
             :handleClose="closePhone"
-        ></phone>
+        ></phone> -->
     </div>
 </template>
 <script>
 import editor from '@/components/editor';
-import phone from '@/components/phone';
+// import phone from '@/components/phone';
 import {getTagId,pushArticle,getProgramaList,getDraft} from '@/utils/public.js'
 if (typeof window !== 'undefined') {
   var $s = require('scriptjs');
@@ -180,7 +180,7 @@ export default {
     },
     components:{
         editor,
-        phone
+        // phone
     },
     mounted(){
         let vm = this;
