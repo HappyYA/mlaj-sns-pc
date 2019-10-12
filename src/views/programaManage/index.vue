@@ -181,7 +181,8 @@ export default {
             updateProgramaInfo({
                 name:this.name,
                 id:this.id,
-                describe:this.des
+                describe:this.des,
+                sort:this.sort
             })
             .then(res=>{
                 if(res.datacode = 1000){
@@ -189,6 +190,7 @@ export default {
                     this.programaList[this.nowIndex].name = this.name
                     this.programaList[this.nowIndex].sort = this.sort
                     this.dialogVisible=false;
+                    this.getList();
                 }
             })
        }

@@ -268,9 +268,9 @@ export default {
                     $.get('http://api.ikid06.ltd/oss/video-url?key=' + videoId, function (data) {
                         mediaUrl = data.data.signed_url
                         if (uploadInfo.file.type.indexOf('video') > -1) {
-                           vm.editor.replaceSelection('<video class="mla-video" width="320" height="240" controls><source src="' + mediaUrl + '" type="video/mp4">您的浏览器不支持 video 标签。</video>');
+                           vm.editor.replaceSelection('<video class="mla-video" width="320" height="240" controls><source src="' + mediaUrl + '" type="video/mp4">您的浏览器不支持播放。</video>');
                         } else if (uploadInfo.file.type.indexOf('audio') > -1) {
-                            vm.editor.replaceSelection('<audio class="mla-audio" controls><source src="' + mediaUrl + '" type="video/mp4">您的浏览器不支持 video 标签。</audio>');
+                            vm.editor.replaceSelection('<audio class="mla-audio" controls><source src="' + mediaUrl + '" type="audio/mpeg">您的浏览器不支持播放。</audio>');
                         }
                         vm.dialogVisibleVideo=false;
                         vm.percentage=0;
