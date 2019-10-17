@@ -228,6 +228,7 @@ export default {
         },
         videoFn() {
             var vm = this;
+            var baseUrl = '';
             vm.uploadervideo = new AliyunUpload.Vod({
                 timeout: 60000,
                 partSize: 1048576,
@@ -235,7 +236,7 @@ export default {
                 retryCount: 3,
                 retryDuration: 2,
                 region: 'cn-shanghai',
-                userId: 99999,
+                userId: '1209748738526333',
                 // 添加文件成功
                 addFileSuccess: function (uploadInfo) {
                     console.log('添加文件成功, 等待上传...')
@@ -245,13 +246,18 @@ export default {
                 },
                 // 开始上传
                 onUploadstarted: function (uploadInfo) {
-                    var stsUrl = 'http://api-dev.ikid06.ltd/oss/sts-token';
+                    // var stsUrl = 'http://api-dev.ikid06.ltd/oss/sts-token';
+                    // var stsUrl = 'http://dev.ikid06.ltd:8799/app/storage/createSecurityToken';
+                    var stsUrl = `http://dev.ikid06.ltd:8799/app/oss/sts-token`;
                     $.get(stsUrl, function (data) {
-                        var info = data.data;
-                        var accessKeyId = info.AccessKeyId
-                        var accessKeySecret = info.AccessKeySecret
-                        var secretToken = info.SecurityToken
-                        vm.uploadervideo.setSTSToken(uploadInfo, accessKeyId, accessKeySecret, secretToken)
+                        console.log('签名数据',data)
+                        var info = data.data.sts_token;
+                        var accessKeyId = info.access_key_id;
+                        var accessKeySecret = info.access_key_secret;
+                        var secretToken = info.security_token;
+                        var expiration = info.Expiration;
+                        baseUrl = info.returnUrl;
+                        vm.uploadervideo.setSTSToken(uploadInfo, accessKeyId, accessKeySecret, secretToken);
                     }, 'json')
                     console.log('文件开始上传...')
 
@@ -259,24 +265,20 @@ export default {
                 },
                 // 文件上传成功
                 onUploadSucceed: function (uploadInfo) {
-                    console.log('uploadInfo', uploadInfo);
+                    console.log('上传成功返回数据', uploadInfo);
                     var videoId = uploadInfo.videoId;
                     var mediaUrl = '';
                     vm.percentage = 100;
                     vm.videoIsFinish = true;
-                    console.log('文件上传成功!');
-                    $.get('http://api.ikid06.ltd/oss/video-url?key=' + videoId, function (data) {
-                        mediaUrl = data.data.signed_url
-                        if (uploadInfo.file.type.indexOf('video') > -1) {
-                           vm.editor.replaceSelection('<video class="mla-video" width="320" height="240" controls><source src="' + mediaUrl + '" type="video/mp4">您的浏览器不支持播放。</video>');
-                        } else if (uploadInfo.file.type.indexOf('audio') > -1) {
-                            vm.editor.replaceSelection('<audio class="mla-audio" controls><source src="' + mediaUrl + '" type="audio/mpeg">您的浏览器不支持播放。</audio>');
-                        }
-                        vm.dialogVisibleVideo=false;
-                        vm.percentage=0;
-                    })
-                    var obj = uploadInfo;
-                    localStorage.setItem("filetemp", JSON.stringify(obj));
+                    if (uploadInfo.file.type.indexOf('video') > -1) {
+                        vm.editor.replaceSelection('<video class="mla-video" width="320" height="240" controls><source src="' + baseUrl+videoId+'.mp4' + '" type="video/mp4">您的浏览器不支持播放。</video>');
+                    } else if (uploadInfo.file.type.indexOf('audio') > -1) {
+                        vm.editor.replaceSelection('<audio class="mla-audio" controls><source src="' + baseUrl+videoId+'.mp3' + '" type="audio/mpeg">您的浏览器不支持播放。</audio>');
+                    }
+                    vm.dialogVisibleVideo=false;
+                    vm.percentage=0;
+                    // var obj = uploadInfo;
+                    // localStorage.setItem("filetemp", JSON.stringify(obj));
                 },
                 // 文件上传失败
                 onUploadFailed: function (uploadInfo, code, message) {
@@ -305,13 +307,13 @@ export default {
                     // 这里是测试接口, 所以我直接获取了 STSToken
                     console.log('文件上传超时!')
 
-                    var stsUrl = 'http://api-dev.ikid06.ltdoss/sts-token';
+                    var stsUrl = 'http://dev.ikid06.ltd:8799/app/oss/sts-token';
                     $.get(stsUrl, function (data) {
-                        var info = data.data;
+                        var info = data.data.sts_token;
                         var accessKeyId = info.access_key_id;
                         var accessKeySecret = info.access_key_secret;
                         var secretToken = info.security_token;
-                        var expiration = info.expiration;
+                        var expiration = info.Expiration;
                         vm.uploadervideo.resumeUploadWithSTSToken(accessKeyId, accessKeySecret, secretToken, expiration)
                     }, 'json')
                 },

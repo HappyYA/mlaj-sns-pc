@@ -21,6 +21,16 @@
                     </div>
                 </div>
                 <div class="list-con">
+                    <div class="item-title">指定端型:</div>
+                    <div class="item-con">
+                       <el-checkbox-group v-model="appList">
+                            <el-checkbox :label="1">家长端</el-checkbox>
+                            <el-checkbox :label="2">教师端</el-checkbox>
+                            <el-checkbox :label="3">园长端</el-checkbox>
+                        </el-checkbox-group>
+                    </div>
+                </div>
+                <div class="list-con">
                     <div class="item-title">内容类型:</div>
                     <div>
                         <el-select  class="item-con" v-model="type" placeholder="请选择">
@@ -80,8 +90,8 @@ export default {
             des:'',
             options:'',
             isPush:true,
-            id : ''
-
+            id : '',
+            appList:[]
         }
     },
     methods: {
@@ -90,7 +100,8 @@ export default {
                 sort:this.sort,
                 name:this.name,
                 type:this.type,
-                des:this.des
+                des:this.des,
+                userType:JSON.stringify(this.appList)
                 })
             .then(res=>{
                 if(res.data.code==1000){
@@ -105,7 +116,7 @@ export default {
                     this.des = '';
                 }else{
                     this.$message({
-                        duration:1000,
+                        duration:2000,
                         type: 'error',
                         message:'添加失败'
                     });
@@ -113,7 +124,7 @@ export default {
             })
             .catch(err=>{
                 this.$message({
-                    duration:1000,
+                    duration:2000,
                     type: 'error',
                     message:'添加失败'
                 });

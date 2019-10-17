@@ -278,7 +278,7 @@ export default {
         markdownChange(info){
             // this.html = info.html;
             // this.markdown = info.markdown
-            console.log(markdown,html)
+            // console.log(markdown,html)
         },
         submitArticle(){
             this.html = this.$refs.markdown.getHTML();
