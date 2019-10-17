@@ -124,6 +124,7 @@ export default {
     background-color: #fff;
     padding: 10px 44px 16px 15px;
     box-sizing: border-box;
+    border-bottom: 1px solid #666;
 }
 .article-con{
     display: flex;

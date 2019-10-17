@@ -46,21 +46,62 @@ export const getArticleList = (page=1,status=2)=>{
 export const delArticle = (id)=>{
     return axios.delete(`${publicUrl}/article?id=${id}`)
 }
-export const getProgramaList = ()=>{
-    return axios.get(publicUrl+'/column/page?pageSize=100')
+// 获取栏目列表
+export const getProgramaList = (page)=>{
+    return axios.get(publicUrl+'/column/page?pageSize=10&currentPage='+page)
 }
+// 添加栏目
 export const addPrograma = (info)=>{
-    return axios.get(`${publicUrl}/column/add?name=${info.name}&sort=${info.sort}&type=${info.type}&describe=${info.des}`)
+    // return axios.get(`${publicUrl}/column/add?name=${info.name}&sort=${info.sort}&type=${info.type}&describe=${info.des}&userType=${info.userType}`)
+    return axios.post(`${publicUrl}/column/add`,{
+        name:info.name,
+        sort:info.sort,
+        describe:info.des,
+        userType:info.userType
+    },{
+        headers:{
+            'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'
+        },
+        transformRequest:[function(data){
+            let ret = ''
+            for (let it in data) {
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+            }
+            return ret
+        }]
+    })
 }
+// 删除栏目
 export const delPrograma = (id) =>{
     return axios.get(`${publicUrl}/column/delete?id=${id}`)
 }
+// 获取栏目信息
 export const getProgramaInfo = (id) =>{
     return axios.get(`${publicUrl}/column/getInfo?id=${id}`)
 }
+// 更新栏目信息
 export const updateProgramaInfo = (info) =>{
-    return axios.get(`${publicUrl}/column/update?id=${info.id}&describe=${info.describe}&name=${info.name}&sort=${info.sort}`)
+    // return axios.get(`${publicUrl}/column/update?id=${info.id}&describe=${info.describe}&name=${info.name}&sort=${info.sort}&userType=${info.userType}`)
+    return axios.post(`${publicUrl}/column/update`,{
+        id:info.id,
+        name:info.name,
+        sort:info.sort,
+        describe:info.describe,
+        userType:info.userType
+    },{
+        headers:{
+            'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'
+        },
+        transformRequest:[function(data){
+            let ret = ''
+            for (let it in data) {
+            ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+            }
+            return ret
+        }]
+    })
 }
+// 登录
 export const login = (info)=>{
     return axios.post(`${publicUrl}/backenduser/login`,{
         password:info.password,
