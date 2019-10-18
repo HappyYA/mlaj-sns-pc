@@ -118,7 +118,7 @@
                     栏目
                 </el-col>
                 <el-col :span="12">
-                    <el-select v-model="programa" multiple placeholder="请选择栏目">
+                    <el-select v-model="programa" filterable multiple placeholder="请选择栏目">
                         <el-option
                             v-for="item in programaList"
                             :key="item.id"
@@ -216,7 +216,7 @@ export default {
             })
         },
         getProgramaList(){
-            getProgramaList().then(res=>{
+            getProgramaList(1,1000).then(res=>{
                 if(res.data.code==1000){
                     this.programaList = res.data.data.list
                 }
