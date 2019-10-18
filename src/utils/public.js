@@ -47,8 +47,8 @@ export const delArticle = (id)=>{
     return axios.delete(`${publicUrl}/article?id=${id}`)
 }
 // 获取栏目列表
-export const getProgramaList = (page)=>{
-    return axios.get(publicUrl+'/column/page?pageSize=10&currentPage='+page)
+export const getProgramaList = (page,pageSize=10)=>{
+    return axios.get(publicUrl+'/column/page?pageSize='+pageSize+'&currentPage='+page)
 }
 // 添加栏目
 export const addPrograma = (info)=>{
