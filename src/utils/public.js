@@ -23,7 +23,7 @@ export const pushArticle = (info,id)=>{
             tag_ids: info.tag_ids,
             content: info.content,
             draft :info.draft,
-            type_id: 1,
+            type_id: info.type_id,
             crowd:info.crowd,
             columnIds:info.columnId
         }
