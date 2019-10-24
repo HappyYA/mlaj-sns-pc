@@ -77,6 +77,21 @@
                     </el-checkbox-group>
                 </el-col>
             </el-row>
+             <el-row class="info-item">
+                <el-col :span="3" class="info-title">
+                    栏目
+                </el-col>
+                <el-col :span="12">
+                    <el-select v-model="programa" filterable multiple placeholder="请选择栏目">
+                        <el-option
+                            v-for="item in programaList"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-col>
+            </el-row>
             <el-row class="info-item">
                 <el-col :span="3" class="info-title">
                     文章类型
@@ -125,21 +140,6 @@
                     </div>
                 </el-col>
             </el-row>
-            <el-row class="info-item">
-                <el-col :span="3" class="info-title">
-                    栏目
-                </el-col>
-                <el-col :span="12">
-                    <el-select v-model="programa" filterable multiple placeholder="请选择栏目">
-                        <el-option
-                            v-for="item in programaList"
-                            :key="item.id"
-                            :label="item.name"
-                            :value="item.id">
-                        </el-option>
-                    </el-select>
-                </el-col>
-            </el-row>
         </div>
         <div class="submit">
             <el-row class="submit-list">
@@ -185,6 +185,7 @@ export default {
             originInfo:{},//传给后台的来源信息
             programa:[],//栏目
             programaList:[],//栏目列表
+            allPrograma:[],//全部栏目数据
             articleId :'',//文章Id
             editorInitData:'',//初始化markdown数据
             isShowPhone:false, // 是否显示预览手机
@@ -231,7 +232,8 @@ export default {
         getProgramaList(){
             getProgramaList(1,1000).then(res=>{
                 if(res.data.code==1000){
-                    this.programaList = res.data.data.list
+                    this.allPrograma = res.data.data.list;
+                   this.programaList = this.filterPram(res.data.data.list,this.peopleList)
                 }
             })
         },
@@ -466,7 +468,7 @@ export default {
                     this.tags = info.tag_ids_obj;
                     this.tagIdTemp = info.tag_ids.split(',');
                     this.html = info.content
-                    this.programa = info.columnIds
+                    // this.programa = info.columnIds
                     this.articleType = info.type_id*1
                     this.cover_img = '/'+info.cover_img.split('/').splice(3).join('/')
                     if(this.$refs.markdown.isLoaded){
@@ -515,6 +517,22 @@ export default {
         },
         handlePreview(){
             this.isShowPhone = true;
+        },
+        filterPram(data=[],filterItem=[]){
+            var arr = [];
+            if (!data) return [];
+            // if(!filterItem) filterItem=[1,2,3];
+            data.forEach((value,index)=>{
+                var arrTemp = filterItem.filter(item=>{
+                   return  value.userTypeList.indexOf(item+1)>-1;
+                });
+                if(filterItem.length>0&&arrTemp.length===filterItem.length){
+                    arr.push(value)
+                }
+            });
+            // this.programaList = arr;
+            return arr;
+            console.log(arr)
         }
 
     },
@@ -523,6 +541,12 @@ export default {
         this.getProgramaList();
         if(this.articleId||this.articleId===0){
             this.getDraftInfo()
+        }
+    },
+    watch: {
+        peopleList(val){
+            this.programaList=this.filterPram(this.allPrograma,this.peopleList);
+            this.programa=[]
         }
     },
     
