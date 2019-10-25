@@ -9,7 +9,7 @@
             background-color="#fff"
             text-color="#222"
             router 
-            active-text-color="#f85959">
+            active-text-color="#5DCB65">
             <el-submenu index="1">
                 <template slot="title">
                     <i class=""><img class="logos" src="../../../assets/logos.png" alt="" srcset=""></i>
@@ -56,10 +56,10 @@ export default {
     .el-menu-item:focus, .el-menu-item:hover {
         outline: 0;
         background-color: #fff !important;
-        color: #f85959 !important;
+        color: #5DCB65 !important;
     }
     .nav-slider{
-        width: 200px;
+        width: 220px;
         box-shadow: 0 0 5px 0 rgba(0,0,0,.05);
         background-color: #fff;
     }

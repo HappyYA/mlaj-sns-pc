@@ -39,7 +39,7 @@
                     </el-radio-group>
                     <div class="add" id="addCon1">
                         <div  class="add-img1" id="addImg1">
-                            <span v-if="!imgSrc" >添加封面</span>
+                            <img src="../../assets/add.png" v-if="!imgSrc" >
                             <img class="fengmian" v-if="imgSrc" :src="imgSrc" alt="">
                         </div>
                         <div class="add-img-tip">
@@ -82,7 +82,7 @@
                     栏目
                 </el-col>
                 <el-col :span="12">
-                    <el-select v-model="programa" filterable multiple placeholder="请选择栏目">
+                    <el-select class="selcet_pra" v-model="programa" filterable multiple placeholder="请选择栏目">
                         <el-option
                             v-for="item in programaList"
                             :key="item.id"
@@ -96,7 +96,7 @@
                 <el-col :span="3" class="info-title">
                     文章类型
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="16">
                     <el-radio-group v-model="articleType">
                         <el-radio :label="1">图文</el-radio>
                         <el-radio :label="2">视频</el-radio>
@@ -108,7 +108,7 @@
                 <el-col :span="3" class="info-title">
                     标签
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="16">
                     <div class="already-tag">已选标签:</div>
                     <div class="already-tag-list">
                         <el-tag
@@ -568,7 +568,7 @@ export default {
             display: inline-block;
             cursor: pointer;
             &.active{
-                color: #f85959;
+                color: #5DCB65;
             }
         }
     }
@@ -619,6 +619,9 @@ export default {
         display: flex;
         margin-top: 20px;
     }
+    .recommend-tag{
+        width: 500px;
+    }
     .recommend-title{
         margin-right: 10px;
         flex-shrink: 1;
@@ -626,7 +629,8 @@ export default {
     }
     .tag-item{
         padding: 4px;
-        background-color: #f0f1f3;
+        background-color: rgb(125, 216, 131);
+        color: #fff !important;
         margin-right: 10px;
         margin-bottom: 8px;
         display: inline-block;
@@ -655,5 +659,8 @@ export default {
     .add-tag-item{
         margin: 5px 0;
         background: #f0f1f3;
+    }
+    .selcet_pra{
+        width: 300px;
     }
 </style>

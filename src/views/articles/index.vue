@@ -1,6 +1,6 @@
 <template>
     <div>
-         <el-tabs v-model="activeName" @tab-click="handleClick">
+         <el-tabs class="panel" v-model="activeName" @tab-click="handleClick">
             <el-tab-pane label="全部" name="first">
                 <artivle-list
                     :status='2'
