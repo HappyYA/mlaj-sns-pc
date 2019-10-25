@@ -17,7 +17,15 @@
             <el-table-column
                 prop="status"
                 label="状态"
-                width="180">
+                width="80">
+            </el-table-column>
+            <el-table-column
+                prop="userType"
+                label="显示端型"
+                width="200">
+                <template slot-scope="scope">
+                    <span class="app-type" v-for="item in scope.row.userTypeList" :key="item">{{map[item]}}</span>
+                </template>
             </el-table-column>
             <el-table-column
                 prop="describe"
@@ -27,7 +35,7 @@
             <el-table-column
                 prop="sort"
                 label="排序"
-                width="180">
+                width="80">
             </el-table-column>
             <el-table-column
                 prop="address"
@@ -72,6 +80,16 @@
                             placeholder="名称推荐使用2个字，不超过4个字"
                             v-model="name">
                         </el-input>
+                    </div>
+                </div>
+                <div class="list-con">
+                    <div class="item-title">指定端型:</div>
+                    <div class="item-con">
+                       <el-checkbox-group v-model="appList">
+                            <el-checkbox :label="1">家长端</el-checkbox>
+                            <el-checkbox :label="2">教师端</el-checkbox>
+                            <el-checkbox :label="3">园长端</el-checkbox>
+                        </el-checkbox-group>
                     </div>
                 </div>
                 <div class="list-con">
@@ -122,6 +140,16 @@
             <el-button type="primary" @click="submitEdit">提交</el-button>
         </span>
         </el-dialog>
+        <div class="pagination">
+            <el-pagination
+                background
+                layout="prev, pager, next"
+                :current-page="currentPage"
+                :total="totalSize"
+                @current-change="getNowList"
+            >
+            </el-pagination>
+        </div>
     </div>
 </template>
 <script>
@@ -140,19 +168,38 @@ export default {
             options:'',
             isPush:true,
             id : '',
-            nowIndex :''
+            nowIndex :'',
+            appList:[],
+            map:{
+                1:'家长端',
+                2:'教师端',
+                3:'园长端',
+            },
+            currentPage:0,
+            totalSize:0,
         }
     },
     mounted() {
-        this.getList()
+        this.getList(1)
     },
     methods: {
-       getList(){
-           getProgramaList()
+       getList(page){
+           getProgramaList(page)
            .then(res=>{
-               this.programaList=res.data.data.list
-               console.log(res.data.data)
+               if(res.data.code==1000){
+                   this.programaList=res.data.data.list;
+                   this.totalSize = res.data.data.total;
+                   console.log(res.data.data)
+               }else{
+                   this.$message({
+                        duration:2000,
+                        message:res.data.msg
+                    });
+               }
            })
+       },
+       getNowList(val){
+           this.getList(val)
        },
        handleEdit(id,data,index){
            this.dialogVisible=true;
@@ -163,6 +210,7 @@ export default {
                this.des = data.describe;
                this.name = data.name
                this.id = id
+               this.appList = data.userTypeList
            })
            console.log(id,data)
        },
@@ -170,6 +218,11 @@ export default {
            delPrograma(id).then(res=>{
                if(res.data.code = 1000){
                    this.programaList.splice(index,1)
+               }else{
+                   this.$message({
+                        duration:2000,
+                        message:res.data.msg
+                    });
                }
             
            })
@@ -181,15 +234,29 @@ export default {
             updateProgramaInfo({
                 name:this.name,
                 id:this.id,
-                describe:this.des
+                describe:this.des,
+                sort:this.sort,
+                userType: JSON.stringify(this.appList)
             })
             .then(res=>{
-                if(res.datacode = 1000){
+                if(res.data.code = 1000){
                     this.programaList[this.nowIndex].describe = this.des
                     this.programaList[this.nowIndex].name = this.name
                     this.programaList[this.nowIndex].sort = this.sort
                     this.dialogVisible=false;
-                }
+                    this.getList();
+                }else{
+                   this.$message({
+                        duration:2000,
+                        message:res.data.msg
+                    });
+               }
+            })
+            .catch(err=>{
+                this.$message({
+                        duration:2000,
+                        message:err
+                    });
             })
        }
     },
@@ -207,5 +274,19 @@ export default {
     }
     .item-con{
         width: 400px;
+    }
+    .app-type{
+        padding: 5px 6px;
+        color: #fff;
+        margin-right: 4px;
+        background-color: #5DCB65;
+        border-radius: 4px;
+        display: inline-block;
+    }
+    .pagination{
+        margin-top: 20px;
+        margin-bottom: 50px;
+        width: 100%;
+        text-align: right;
     }
 </style>

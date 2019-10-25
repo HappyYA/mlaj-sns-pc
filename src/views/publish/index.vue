@@ -77,6 +77,33 @@
                     </el-checkbox-group>
                 </el-col>
             </el-row>
+             <el-row class="info-item">
+                <el-col :span="3" class="info-title">
+                    栏目
+                </el-col>
+                <el-col :span="12">
+                    <el-select v-model="programa" filterable multiple placeholder="请选择栏目">
+                        <el-option
+                            v-for="item in programaList"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id">
+                        </el-option>
+                    </el-select>
+                </el-col>
+            </el-row>
+            <el-row class="info-item">
+                <el-col :span="3" class="info-title">
+                    文章类型
+                </el-col>
+                <el-col :span="12">
+                    <el-radio-group v-model="articleType">
+                        <el-radio :label="1">图文</el-radio>
+                        <el-radio :label="2">视频</el-radio>
+                        <el-radio :label="3">音频</el-radio>
+                    </el-radio-group>
+                </el-col>
+            </el-row>
             <el-row class="info-item">
                 <el-col :span="3" class="info-title">
                     标签
@@ -113,21 +140,6 @@
                     </div>
                 </el-col>
             </el-row>
-            <el-row class="info-item">
-                <el-col :span="3" class="info-title">
-                    栏目
-                </el-col>
-                <el-col :span="12">
-                    <el-select v-model="programa" multiple placeholder="请选择栏目">
-                        <el-option
-                            v-for="item in programaList"
-                            :key="item.id"
-                            :label="item.name"
-                            :value="item.id">
-                        </el-option>
-                    </el-select>
-                </el-col>
-            </el-row>
         </div>
         <div class="submit">
             <el-row class="submit-list">
@@ -136,15 +148,15 @@
                 <el-button @click = "submitArticle" type="primary" round>发布</el-button> 
             </el-row>
         </div>
-        <phone
+        <!-- <phone
             :isShowPhone="isShowPhone"
             :handleClose="closePhone"
-        ></phone>
+        ></phone> -->
     </div>
 </template>
 <script>
 import editor from '@/components/editor';
-import phone from '@/components/phone';
+// import phone from '@/components/phone';
 import {getTagId,pushArticle,getProgramaList,getDraft} from '@/utils/public.js'
 if (typeof window !== 'undefined') {
   var $s = require('scriptjs');
@@ -173,14 +185,16 @@ export default {
             originInfo:{},//传给后台的来源信息
             programa:[],//栏目
             programaList:[],//栏目列表
+            allPrograma:[],//全部栏目数据
             articleId :'',//文章Id
             editorInitData:'',//初始化markdown数据
             isShowPhone:false, // 是否显示预览手机
+            articleType:1,//文章类型
         }
     },
     components:{
         editor,
-        phone
+        // phone
     },
     mounted(){
         let vm = this;
@@ -197,8 +211,8 @@ export default {
                 await vm.fetchScript('/oss/upload1.js')
                 vm.$nextTick(()=>{
                     if(vm.isFirstLoad){
-                        uploaderImg.init();
-                        uploaderImg.vm = vm;
+                       window.uploaderImg.init();
+                       window.uploaderImg.vm = vm;
                         vm.isFirstLoad= false
                     }
                 })
@@ -216,11 +230,11 @@ export default {
             })
         },
         getProgramaList(){
-            getProgramaList().then(res=>{
+            getProgramaList(1,1000).then(res=>{
                 if(res.data.code==1000){
-                    this.programaList = res.data.data.list
+                    this.allPrograma = res.data.data.list;
+                   this.programaList = this.filterPram(res.data.data.list,this.peopleList)
                 }
-                console.log(res.data)
             })
         },
         // 用户手动输入标签
@@ -228,7 +242,7 @@ export default {
             let tagTemp = {};
             let vm = this;
             getTagId(this.addTagItemInput).then(res=>{
-                tagTemp.name = this.recommends[index].name;
+                // tagTemp.name = this.recommends[index].name;
                 tagTemp.id = res.data.data.tag_id;
                 if(vm.tagIdTemp.indexOf(tagTemp.id)>-1){
                     vm.$message({
@@ -256,7 +270,6 @@ export default {
                 getTagId(name).then(res=>{
                     tagTemp.name = name;
                     tagTemp.id = res.data.data.tag_id;
-                    console.log(res)
                     if(vm.tagIdTemp.indexOf(tagTemp.id)>-1){
                         vm.$message({
                             duration:1000,
@@ -275,10 +288,10 @@ export default {
             this.tagIdTemp.splice(index,1)
             this.tags.splice(index,1)
         },
-        markdownChange(info){
+        markdownChange(){
             // this.html = info.html;
             // this.markdown = info.markdown
-            console.log(markdown,html)
+            // console.log(markdown,html)
         },
         submitArticle(){
             this.html = this.$refs.markdown.getHTML();
@@ -364,7 +377,7 @@ export default {
                     tag_ids: vm.tagIdTemp.toString(),
                     content: vm.html,
                     draft :vm.markdown,
-                    type_id: 1,
+                    type_id: vm.articleType,
                     crowd:vm.peopleList.toString(),
                     columnId:vm.programa
             },vm.articleId)
@@ -386,7 +399,11 @@ export default {
                 }
             })
             .catch(err=>{
-                console.log(err)
+                this.$message({
+                        duration:1000,
+                        type: 'error',
+                        message:err
+                    });
             })
         },
         savedraft(){
@@ -410,7 +427,7 @@ export default {
                     tag_ids: vm.tagIdTemp.toString(),
                     content: vm.html,
                     draft :vm.markdown,
-                    type_id: 1,
+                    type_id: vm.articleType,
                     crowd:vm.peopleList.toString(),
                     columnId:vm.programa
                     },vm.articleId)
@@ -451,7 +468,8 @@ export default {
                     this.tags = info.tag_ids_obj;
                     this.tagIdTemp = info.tag_ids.split(',');
                     this.html = info.content
-                    this.programa = info.columnIds
+                    // this.programa = info.columnIds
+                    this.articleType = info.type_id*1
                     this.cover_img = '/'+info.cover_img.split('/').splice(3).join('/')
                     if(this.$refs.markdown.isLoaded){
                         this.$refs.markdown.appenMarkdown(info.draft)
@@ -465,7 +483,6 @@ export default {
                         message:res.data.msg
                     });
                 }
-                console.log(res.data.data)
             })
             .catch(err=>{
                 this.$message({
@@ -475,8 +492,7 @@ export default {
                 });
             })
         },
-        checkboxChange(val){
-            console.log(val)
+        checkboxChange(){
         },
         resetData(){
             this.articleTitle='';
@@ -490,6 +506,7 @@ export default {
             this.originInfo = {};
             this.programa = [];
             this.tags = [];
+            this.articleType=1;
             if(this.$refs.markdown.isLoaded){
                 this.$refs.markdown.setMarkdown('');
             }
@@ -500,15 +517,36 @@ export default {
         },
         handlePreview(){
             this.isShowPhone = true;
+        },
+        filterPram(data=[],filterItem=[]){
+            var arr = [];
+            if (!data) return [];
+            // if(!filterItem) filterItem=[1,2,3];
+            data.forEach((value,index)=>{
+                var arrTemp = filterItem.filter(item=>{
+                   return  value.userTypeList.indexOf(item+1)>-1;
+                });
+                if(filterItem.length>0&&arrTemp.length===filterItem.length){
+                    arr.push(value)
+                }
+            });
+            // this.programaList = arr;
+            return arr;
+            console.log(arr)
         }
 
     },
     activated(){
-        console.log(this.$refs.markdown.isLoaded)
         this.articleId = this.$route.query.id||'';
         this.getProgramaList();
         if(this.articleId||this.articleId===0){
             this.getDraftInfo()
+        }
+    },
+    watch: {
+        peopleList(val){
+            this.programaList=this.filterPram(this.allPrograma,this.peopleList);
+            this.programa=[]
         }
     },
     
