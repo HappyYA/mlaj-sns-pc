@@ -36,7 +36,7 @@ export const getDraft = (id)=>{
 // 获取文章列表
 export const getArticleList = (page=1,status=2)=>{
     return axios.post(`${publicUrl}/article/query/page`,{
-        page_size:10,
+        page_size:5,
         current_page:page,
         status:status,
         type_id:0

@@ -22,12 +22,14 @@
                 <img @click="delItem(item.id)" class="del-img"  :src="delImg" alt="">
             </div>
         </div>
-        <div class="pagination">
+        <div v-if="totalSize" class="pagination">
             <el-pagination
-                background
-                layout="prev, pager, next"
+                layout=" total,prev, pager, next"
                 :current-page="currentPage"
                 :total="totalSize"
+                prev-text="上一页"
+                next-text="下一页"
+                :page-size='5'
                 @current-change="getNowList"
             >
             </el-pagination>
@@ -124,7 +126,7 @@ export default {
     background-color: #fff;
     padding: 10px 44px 16px 15px;
     box-sizing: border-box;
-    border-bottom: 1px solid #666;
+    border-bottom: 1px solid #E4E7ED;
 }
 .article-con{
     display: flex;
@@ -177,10 +179,10 @@ export default {
     }
 }
 .pagination{
-    margin-top: 20px;
-    margin-bottom: 50px;
+    margin-top: 86px;
+    margin-bottom: 94px;
     width: 100%;
-    text-align: right;
+    text-align: center;
 }
 
 </style>

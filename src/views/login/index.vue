@@ -6,7 +6,7 @@
                 <p class="login-title">美乐爱CMS后台管理系统</p>
             </div>
             <!-- <h1>美乐爱成长营-后台登录</h1> -->
-            <el-form class="form-con"> 
+            <el-form class="form-con" @keyup.enter.native="login"> 
                 <el-form-item>
                     <el-input v-model="form.name" placeholder="用户名" class="input-text-login">
                         <template slot="prepend">
@@ -23,6 +23,10 @@
                     <el-button class="login-btn" type="primary" @click="login">登录</el-button>
                 </el-form-item>
             </el-form>
+        </div>
+        <div class="slogan">
+            <p class="slogan-Chinese">为祖国养育世界级人才</p>
+            <p class="slogan-English">Nurturing World-class talents for our country</p>
         </div>
     </div>
 </template>
@@ -76,26 +80,16 @@ export default {
         left: 0;
         right: 0;
         display: flex;
+        padding-top: 164px;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
+        // justify-content: center;
         background-color: rgba(0,0,0,0.5);
         background-image: url('./../../assets/bg.png');
         background-size: over;
     }
     .login-form{
         width: 576px;;
-        // height: 230px;
-        // background-color: rgba(0,0,0,0.5);
-        // border-radius: 4px;
-        // padding: 20px;
-        // h1{
-            //     text-align: center;
-        //     color: #fff;
-        //     font-size: 24px;
-        //     margin-bottom: 20px;
-        //     font-weight: 400;
-        //     margin-top: 0;
-        // }
     }
     .form-header{
         text-align: center;
@@ -118,6 +112,9 @@ export default {
         font-size:24px;
         border-radius:10px;
     }
+    .login-btn:hover{
+        color: #fff;
+    }
     .form-con{
         width: 576px;
         box-sizing: border-box;
@@ -131,5 +128,17 @@ export default {
     }
     .login-img{
         height: 100%;;
+    }
+    .slogan{
+        color: #fff;
+        margin-top: 136px;
+        text-align: center;
+        .slogan-Chinese{
+            font-size: 30px;
+            margin-bottom: 14px;
+        }
+        .slogan-English{
+            font-size: 12px;
+        }
     }
 </style>

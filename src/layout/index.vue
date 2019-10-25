@@ -30,11 +30,11 @@ export default {
     .layout-aside{
         overflow: hidden;
         padding: 0;
-        width: 210px !important;
-        margin-right: 10px;
+        width: 220px !important;
+        // margin-right: 10px;
     }
     .layout-main{
-        padding: 0;
+        padding: 0 0 0 10px;
     }
     .header-con{
         padding: 0;

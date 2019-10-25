@@ -142,11 +142,12 @@
         </el-dialog>
         <div class="pagination">
             <el-pagination
-                background
-                layout="prev, pager, next"
+                layout="total,prev, pager, next"
                 :current-page="currentPage"
                 :total="totalSize"
                 @current-change="getNowList"
+                 prev-text="上一页"
+                next-text="下一页"
             >
             </el-pagination>
         </div>
@@ -284,9 +285,9 @@ export default {
         display: inline-block;
     }
     .pagination{
-        margin-top: 20px;
-        margin-bottom: 50px;
+        margin-top: 86px;
+        margin-bottom: 94px;
         width: 100%;
-        text-align: right;
+        text-align: center;
     }
 </style>
