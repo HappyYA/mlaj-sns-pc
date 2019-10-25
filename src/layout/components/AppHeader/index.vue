@@ -1,7 +1,7 @@
 <template>
     <div class="header-con">
         <div class="header">
-            <div class="logo">美乐爱内容平台</div>
+            <div class="logo"><img src="../../../assets/header_logo.png" alt=""></div>
             <div class="user-info">
                 <img class="user-icon" :src="userIcon" alt="">
                 <span class="user-name">美乐爱</span>
@@ -45,6 +45,10 @@ export default {
         font-size: 20px;
         color: #000;
         font-weight: bold;
+        img{
+            height: 100%;
+            width: 220px;
+        }
     }
     .user-info{
         display: flex;
