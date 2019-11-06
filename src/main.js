@@ -44,7 +44,9 @@ import {
   TimeSelect,
   TimePicker,
   Pagination,
+  Popover,
 } from 'element-ui'
+Vue.use(Popover)
 Vue.use(Pagination)
 Vue.use(Table)
 Vue.use(TableColumn)

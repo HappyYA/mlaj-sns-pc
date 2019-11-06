@@ -6,7 +6,15 @@
                     <img class="article-img" :src="item.cover_img?item.cover_img:articleImg" alt="">
                 </div>
                 <div class="article-con">
-                    <p class="artile-title">{{item.title}}</p>
+                    <!-- <p class="artile-title">{{item.title}}(id:{{item.id}})</p> -->
+                    <el-popover
+                        placement="top-start"
+                        title="URL"
+                        width="600"
+                        trigger="hover"
+                        :content=baseUrla+item.id+baseUrl>
+                        <div slot="reference">{{item.title}}</div>
+                    </el-popover>
                     <p class="article-num">
                         <span>浏览 {{item.read_number}} </span>  
                         <span>点赞 {{item.like_number}}</span>
@@ -57,7 +65,9 @@ export default {
                 1:'教师',
                 2:'园长',
                 0:'家长'
-            }
+            },
+            baseUrla:'http://apph5.ikid06.ltd/sns/details2.html?id=',
+            baseUrl:'&uid=103782'
         }
     },
     mounted() {
