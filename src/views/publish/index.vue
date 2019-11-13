@@ -466,7 +466,7 @@ export default {
                     this.imgSrc = info.cover_img;
                     this.peopleList = info.crowd_list;
                     this.tags = info.tag_ids_obj;
-                    this.tagIdTemp = info.tag_ids.split(',');
+                    this.tagIdTemp = JSON.parse('['+info.tag_ids+']');
                     this.html = info.content
                     // this.programa = info.columnIds
                     this.articleType = info.type_id*1
