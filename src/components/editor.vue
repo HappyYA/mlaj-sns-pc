@@ -256,7 +256,7 @@ export default {
                         var accessKeySecret = info.access_key_secret;
                         var secretToken = info.security_token;
                         var expiration = info.Expiration;
-                        baseUrl = info.returnUrl;
+                        baseUrl = info.returnUrlFormatVideo;
                         vm.uploadervideo.setSTSToken(uploadInfo, accessKeyId, accessKeySecret, secretToken);
                     }, 'json')
                     console.log('文件开始上传...')
